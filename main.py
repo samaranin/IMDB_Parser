@@ -19,8 +19,10 @@ def get_tags(subtext, index):
 
 
 def imdb_search(search_parameter, search_url, search_headers):
+    request_link = search_url + search_parameter
+
     session = requests.session()
-    request = session.get(search_url + search_parameter, headers=search_headers)
+    request = session.get(request_link, headers=search_headers)
 
     if request.status_code == 200:
         soup = bs(request.content, 'html.parser')
@@ -33,12 +35,14 @@ def imdb_search(search_parameter, search_url, search_headers):
 
         parse_movie_data_from_imdb(session, search_results, search_headers)
     else:
-        return {"error": request.status_code}
+        return {"error": request.status_code, "request_url": request_link}
 
 
 def parse_movie_data_from_imdb(session, links_list, request_headers):
     for link in links_list:
-        request = session.get(IMDB_LINK + link, headers=request_headers)
+        request_link = IMDB_LINK + link
+
+        request = session.get(request_link, headers=request_headers)
 
         if request.status_code == 200:
             soup = bs(request.content, 'html.parser')
@@ -76,7 +80,7 @@ def parse_movie_data_from_imdb(session, links_list, request_headers):
             print(rating + " " + duration + " " + str(tags) + " " + launch_date)
 
         else:
-            return {"error": request.status_code}
+            return {"error": request.status_code, "request_url": request_link}
 
 
 print(imdb_search("Bumblebee", request_url, headers))
