@@ -33,54 +33,62 @@ def imdb_search(search_parameter, search_url, search_headers):
             found_a = td.find('a', href=True)
             search_results.append(found_a['href'])
 
-        parse_movie_data_from_imdb(session, search_results, search_headers)
+        # parsing all search results
+        for link in search_results:
+            parse_movie_data_from_imdb(session, link, search_headers)
+
     else:
         return {"error": request.status_code, "request_url": request_link}
 
 
-def parse_movie_data_from_imdb(session, links_list, request_headers):
-    for link in links_list:
-        request_link = IMDB_LINK + link
+def parse_movie_data_from_imdb(session, movie_link, request_headers):
+    request_link = IMDB_LINK + movie_link
 
-        request = session.get(request_link, headers=request_headers)
+    request = session.get(request_link, headers=request_headers)
 
-        if request.status_code == 200:
-            soup = bs(request.content, 'html.parser')
+    if request.status_code == 200:
+        soup = bs(request.content, 'html.parser')
 
-            # get title
-            title_tag = soup.find('h1', attrs={'class': ''})
-            title = remove_brackets(title_tag.text)
+        # get title
+        title_tag = soup.find('h1', attrs={'class': ''})
+        title = remove_brackets(title_tag.text)
 
-            # get year
-            year_tag = title_tag.find('a', href=True)
-            year = year_tag.text if year_tag is not None else ""
+        # get year
+        year_tag = title_tag.find('a', href=True)
+        year = year_tag.text if year_tag is not None else ""
 
-            # get sub info
-            subtext = soup.find('div', attrs={'class': 'subtext'}).text.split("|")
-            number_of_elements = len(subtext)
+        # get sub info
+        subtext = soup.find('div', attrs={'class': 'subtext'}).text.split("|")
+        number_of_elements = len(subtext)
 
-            if number_of_elements == 4:
-                rating = subtext[0].strip()
-                duration = subtext[1].strip()
-                tags = get_tags(subtext, 2)
-                launch_date = remove_brackets(subtext[3])
+        if number_of_elements == 4:
+            rating = subtext[0].strip()
+            duration = subtext[1].strip()
+            tags = get_tags(subtext, 2)
+            launch_date = remove_brackets(subtext[3])
 
-            elif number_of_elements == 3:
-                tags = get_tags(subtext, 1)
-                rating = ''
-                duration = subtext[0].strip()
-                launch_date = remove_brackets(subtext[2])
-
-            else:
-                tags = get_tags(subtext, 0)
-                rating = ''
-                duration = ''
-                launch_date = ''
-
-            print(rating + " " + duration + " " + str(tags) + " " + launch_date)
+        elif number_of_elements == 3:
+            tags = get_tags(subtext, 1)
+            rating = ''
+            duration = subtext[0].strip()
+            launch_date = remove_brackets(subtext[2])
 
         else:
-            return {"error": request.status_code, "request_url": request_link}
+            tags = get_tags(subtext, 0)
+            rating = ''
+            duration = ''
+            launch_date = ''
+
+        image_container = soup.find('div', attrs={'class': 'poster'})
+        image_link = image_container.find('img')['src'] if image_container is not None else ''
+
+        print(title + " " + year)
+        print(rating + " " + duration + " " + str(tags) + " " + launch_date)
+        print(image_link)
+        print()
+
+    else:
+        return {"error": request.status_code, "request_url": request_link}
 
 
-print(imdb_search("Bumblebee", request_url, headers))
+imdb_search("Bumblebee", request_url, headers)
