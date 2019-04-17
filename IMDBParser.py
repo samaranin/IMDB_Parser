@@ -52,7 +52,28 @@ class Movie:
     """
     Base class for Movie information
     """
-    pass
+
+    def __init__(self, **kwargs):
+        """
+        Gets sequence of constructions param=param_value to create movie object
+        :param kwargs:name, duration, rating, launch_date, image_link, imdb_rating, director, writers, actors, storyline
+        """
+        defaults = {
+            'name': '',
+            'duration': '',
+            'rating': '',
+            'launch_date': '',
+            'image_link': '',
+            'genre': '',
+            'imdb_rating': '',
+            'director': '',
+            'writers': '',
+            'actors': '',
+            'storyline': ''
+        }
+
+        for (prop, value) in defaults.items():
+            setattr(self, prop, kwargs.get(prop, value))
 
 
 class IMDBSearch:
