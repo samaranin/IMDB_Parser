@@ -169,13 +169,29 @@ class IMDBSearch:
             image_container = soup.find('div', attrs={'class': 'poster'})
             image_link = image_container.find('img')['src'] if image_container is not None else ''
 
+            # get imdb rating
+            imdb_rating = soup.find('span', attrs={'itemprop': 'ratingValue'})
+            imdb_rating = imdb_rating.text if imdb_rating is not None else ''
+
             print(title + " " + year)
             print(rating + " " + duration + " " + str(genre) + " " + launch_date)
             print(image_link)
+            print(imdb_rating)
             print()
 
+            movie = Movie(
+                title=title,
+                year=year,
+                rating=rating,
+                duration=duration,
+                genre=genre,
+                launch_date=launch_date,
+                image_link=image_link,
+                imdb_rating=imdb_rating,
+            )
+
             # return a Response object with Movie data in
-            return Response(request.status_code, movie_link, Movie())
+            return Response(request.status_code, movie_link, movie)
         else:
             # or return an empty response
             return Response(request.status_code, movie_link, None)
