@@ -23,15 +23,16 @@ class StringProcessing:
         return re.sub(r"[(\[].*?[)\]]", "", string.strip()).strip()
 
     @staticmethod
-    def split_words(text):
+    def split_words(text, separator=","):
         """
         Split words separated with comas into list of word and removes redundant spaces
-        :param text: string with comas
+        :param text: string with separator
+        :param separator: separator for words
         :return: list of words
         """
-        text_data = text.strip().split(",")
-        word_data = text_data if text_data is not None else ""
-        return [word.strip() for word in word_data]
+        text_data = text.strip().split(separator)
+        text_data = text_data if text_data is not None else ""
+        return [word.strip() for word in text_data]
 
     @staticmethod
     def concatenate_strings(string_list, separator=", "):
