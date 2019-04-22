@@ -29,8 +29,9 @@ class StringProcessing:
         :param text: string with comas
         :return: list of words
         """
-        tags_data = text.strip().split(",") if text.strip().split(",") is not None else ""
-        return [tag.strip() for tag in tags_data]
+        text_data = text.strip().split(",")
+        word_data = text_data if text_data is not None else ""
+        return [word.strip() for word in word_data]
 
     @staticmethod
     def concatenate_strings(string_list, separator=", "):
