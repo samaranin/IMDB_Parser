@@ -20,7 +20,7 @@ class StringProcessing:
         :param string: text with brackets
         :return: text without brackets
         """
-        return re.sub(r"[\(\[].*?[\)\]]", "", string.strip()).strip()
+        return re.sub(r"[(\[].*?[)\]]", "", string.strip()).strip()
 
     @staticmethod
     def split_words(text):
