@@ -228,36 +228,36 @@ class IMDBSearch:
                 storyline = storyline.text.strip().replace("...\n                    See full summary\xa0", "") \
                     if storyline is not None else ''
 
-                # find all stuff
-                stuff = summary.find_all('div', attrs={'class': 'credit_summary_item'})
+                # find all staff
+                staff = summary.find_all('div', attrs={'class': 'credit_summary_item'})
 
-                def persons_parsers(stuff_object):
+                def persons_parsers(staff_object):
                     """
                     Parses staff and creates single line
-                    :param stuff_object: parsed stuff data
-                    :return: string with stuff name separated with comas
+                    :param staff_object: parsed staff data
+                    :return: string with staff name separated with comas
                     """
-                    stuff_list = stuff_object.find_all('a', href=True)
+                    staff_list = staff_object.find_all('a', href=True)
                     # create list of persons names
                     # link to person's name contains 'name' part - so we need only it
                     # same thing will be for
                     persons = [
-                        stuff_item.text if 'name' in stuff_item['href'] else ''
-                        for stuff_item in stuff_list
-                        if stuff_list is not None
+                        staff_item.text if 'name' in staff_item['href'] else ''
+                        for staff_item in staff_list
+                        if staff_list is not None
                     ]
-                    stuff_string = StringProcessing.concatenate_strings(persons)
-                    stuff_string = stuff_string if stuff_string != 'IMDbPro' else ''
-                    return stuff_string
+                    staff_string = StringProcessing.concatenate_strings(persons)
+                    staff_string = staff_string if staff_string != 'IMDbPro' else ''
+                    return staff_string
 
-                # get directors from stuff
-                director = persons_parsers(stuff[0]) if len(stuff) > 0 else ''
+                # get directors from staff
+                director = persons_parsers(staff[0]) if len(staff) > 0 else ''
 
-                # get writers from stuff
-                writers = persons_parsers(stuff[1]) if len(stuff) > 1 else ''
+                # get writers from staff
+                writers = persons_parsers(staff[1]) if len(staff) > 1 else ''
 
-                # get actors from stuff
-                actors = persons_parsers(stuff[2]) if len(stuff) > 2 else ''
+                # get actors from staff
+                actors = persons_parsers(staff[2]) if len(staff) > 2 else ''
 
             # creating new movie object to return
             movie = Movie(
